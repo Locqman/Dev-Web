@@ -1,0 +1,260 @@
+/* =============================================
+   SkiConnect — Styles globaux
+   Thème : Montagne / Station de ski
+   Couleurs : Bleu glacier, blanc neige, gris ardoise
+   ============================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bleu:        #1565c0;
+  --bleu-clair:  #1e88e5;
+  --bleu-pale:   #e3f2fd;
+  --blanc:       #ffffff;
+  --gris-clair:  #f5f7fa;
+  --gris:        #90a4ae;
+  --gris-fonce:  #455a64;
+  --texte:       #263238;
+  --rouge:       #e53935;
+  --vert:        #43a047;
+  --orange:      #fb8c00;
+  --ombre:       0 2px 12px rgba(0,0,0,0.10);
+  --radius:      10px;
+  --transition:  0.2s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--gris-clair);
+  color: var(--texte);
+  min-height: 100vh;
+}
+
+a { color: var(--bleu-clair); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.8rem; color: var(--bleu); margin-bottom: 0.5rem; }
+h2 { font-size: 1.4rem; color: var(--gris-fonce); margin-bottom: 0.5rem; }
+h3 { font-size: 1.1rem; }
+
+/* ── Navbar ── */
+.navbar {
+  background: var(--bleu);
+  color: var(--blanc);
+  padding: 0 2rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--ombre);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.navbar-brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--blanc);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.navbar-links a {
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+  transition: color var(--transition);
+}
+.navbar-links a:hover,
+.navbar-links a.active { color: var(--blanc); text-decoration: none; }
+
+/* ── Layout ── */
+.page-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.page-header {
+  margin-bottom: 2rem;
+}
+
+/* ── Boutons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: opacity var(--transition), background var(--transition);
+}
+.btn:hover { opacity: 0.88; }
+.btn-primary   { background: var(--bleu-clair); color: var(--blanc); }
+.btn-secondary { background: var(--gris-fonce); color: var(--blanc); }
+.btn-danger    { background: var(--rouge);      color: var(--blanc); }
+.btn-success   { background: var(--vert);       color: var(--blanc); }
+.btn-outline   { background: transparent; border: 2px solid var(--bleu-clair); color: var(--bleu-clair); }
+.btn-sm        { padding: 0.35rem 0.9rem; font-size: 0.85rem; }
+
+/* ── Cards ── */
+.card {
+  background: var(--blanc);
+  border-radius: var(--radius);
+  box-shadow: var(--ombre);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--bleu);
+  margin-bottom: 0.4rem;
+}
+.card-meta {
+  font-size: 0.85rem;
+  color: var(--gris);
+  margin-bottom: 0.6rem;
+}
+
+/* ── Badges statut ── */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.badge-actif       { background: #e8f5e9; color: var(--vert); }
+.badge-inactif     { background: #fce4ec; color: var(--rouge); }
+.badge-maintenance { background: #fff3e0; color: var(--orange); }
+.badge-debutant      { background: #e3f2fd; color: #1565c0; }
+.badge-intermediaire { background: #e8f5e9; color: #2e7d32; }
+.badge-avance        { background: #fff3e0; color: #e65100; }
+.badge-expert        { background: #fce4ec; color: #b71c1c; }
+
+/* ── Formulaires ── */
+.form-group {
+  margin-bottom: 1.1rem;
+}
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--gris-fonce);
+  font-size: 0.9rem;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1.5px solid #cfd8dc;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  background: var(--blanc);
+  color: var(--texte);
+  transition: border-color var(--transition);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--bleu-clair);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ── Barre de recherche ── */
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  background: var(--blanc);
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--ombre);
+  margin-bottom: 1.5rem;
+  align-items: flex-end;
+}
+.search-bar input,
+.search-bar select {
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid #cfd8dc;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 140px;
+}
+.search-bar input:focus,
+.search-bar select:focus {
+  outline: none;
+  border-color: var(--bleu-clair);
+}
+
+/* ── Messages ── */
+.alert {
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.alert-error   { background: #fce4ec; color: var(--rouge); }
+.alert-success { background: #e8f5e9; color: var(--vert); }
+.alert-info    { background: var(--bleu-pale); color: var(--bleu); }
+
+/* ── Loading spinner ── */
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: var(--gris);
+  font-size: 1rem;
+}
+
+/* ── Tableau ── */
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--blanc);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--ombre);
+}
+thead { background: var(--bleu); color: var(--blanc); }
+th, td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+}
+tbody tr:nth-child(even) { background: var(--gris-clair); }
+tbody tr:hover { background: var(--bleu-pale); }
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .navbar { padding: 0 1rem; }
+  .form-row { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+  .page-container { margin: 1rem auto; }
+  h1 { font-size: 1.4rem; }
+}
