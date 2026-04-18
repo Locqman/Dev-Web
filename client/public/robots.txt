@@ -1,0 +1,3 @@
+# SkiConnect
+User-agent: *
+Disallow:
