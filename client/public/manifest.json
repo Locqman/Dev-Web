@@ -1,0 +1,9 @@
+{
+  "short_name": "SkiConnect",
+  "name": "SkiConnect - Station de ski intelligente",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1565c0",
+  "background_color": "#f5f7fa"
+}
