@@ -2,8 +2,9 @@ const mysql = require('mysql2');
 
 const db = mysql.createConnection({
   host:     'localhost',
-  user:     'root',        // à changer selon votre config MySQL
-  password: '',            // à changer selon votre config MySQL
+  port:     3306,
+  user:     'root',
+  password: 'root1234',            // si vous avez mis un mot de passe lors de l'install MySQL, mettez-le ici. Sinon laissez vide
   database: 'skiconnect'
 });
 

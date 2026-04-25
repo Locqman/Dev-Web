@@ -2,8 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
 const db     = require('../config/db');
-const { sendValidationEmail } = require('../config/mailer');
-const { JWT_SECRET }          = require('../middlewares/auth');
+const { JWT_SECRET } = require('../middlewares/auth');
 
 // POST /api/auth/register
 const register = (req, res) => {
@@ -13,7 +12,6 @@ const register = (req, res) => {
     return res.status(400).json({ message: 'Pseudo, email et mot de passe requis.' });
   }
 
-  // Vérifier si email ou pseudo déjà utilisé
   db.query(
     'SELECT id FROM users WHERE email = ? OR pseudo = ?',
     [email, pseudo],
@@ -29,26 +27,21 @@ const register = (req, res) => {
 
         db.query(
           `INSERT INTO users 
-           (pseudo, nom, prenom, email, password_hash, age, genre, date_naissance, type_membre, token_validation)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [pseudo, nom, prenom, email, password_hash, age, genre, date_naissance, type_membre || 'skieur', token_validation],
-          async (err2, result) => {
-            if (err2) return res.status(500).json({ message: 'Erreur lors de la création du compte.' });
-
-            // Envoi du mail de validation
-            try {
-              await sendValidationEmail(email, pseudo, token_validation);
-            } catch (mailErr) {
-              console.error('Erreur envoi mail :', mailErr.message);
-              // On ne bloque pas l'inscription si le mail échoue
+           (pseudo, nom, prenom, email, password_hash, age, genre, date_naissance, type_membre, token_validation, est_valide)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+          [pseudo, nom || null, prenom || null, email, password_hash, age || null, genre || null, date_naissance || null, type_membre || 'skieur', token_validation],
+          (err2) => {
+            if (err2) {
+              console.error('Erreur SQL inscription:', err2.message);
+              return res.status(500).json({ message: 'Erreur lors de la création du compte.' });
             }
-
             res.status(201).json({
-              message: 'Inscription réussie ! Vérifiez votre email pour valider votre compte.'
+              message: 'Inscription réussie ! Vous pouvez vous connecter.'
             });
           }
         );
       } catch (e) {
+        console.error('Erreur bcrypt:', e.message);
         res.status(500).json({ message: 'Erreur serveur.' });
       }
     }
@@ -57,27 +50,7 @@ const register = (req, res) => {
 
 // GET /api/auth/validate/:token
 const validateEmail = (req, res) => {
-  const { token } = req.params;
-
-  db.query(
-    'SELECT id FROM users WHERE token_validation = ? AND est_valide = FALSE',
-    [token],
-    (err, results) => {
-      if (err) return res.status(500).json({ message: 'Erreur serveur.' });
-      if (results.length === 0) {
-        return res.status(400).json({ message: 'Lien invalide ou déjà utilisé.' });
-      }
-
-      db.query(
-        'UPDATE users SET est_valide = TRUE, token_validation = NULL WHERE id = ?',
-        [results[0].id],
-        (err2) => {
-          if (err2) return res.status(500).json({ message: 'Erreur serveur.' });
-          res.json({ message: 'Compte validé avec succès ! Vous pouvez vous connecter.' });
-        }
-      );
-    }
-  );
+  res.json({ message: 'Compte validé avec succès ! Vous pouvez vous connecter.' });
 };
 
 // POST /api/auth/login
@@ -99,16 +72,11 @@ const login = (req, res) => {
 
       const user = results[0];
 
-      if (!user.est_valide) {
-        return res.status(403).json({ message: 'Compte non validé. Vérifiez votre email.' });
-      }
-
       const match = await bcrypt.compare(password, user.password_hash);
       if (!match) {
         return res.status(401).json({ message: 'Email ou mot de passe incorrect.' });
       }
 
-      // Mise à jour points et nb_connexions
       const pointsConnexion = 0.25;
       db.query(
         'UPDATE users SET nb_connexions = nb_connexions + 1, points = points + ? WHERE id = ?',
@@ -119,7 +87,6 @@ const login = (req, res) => {
         [user.id, pointsConnexion]
       );
 
-      // Vérifier si le niveau doit monter automatiquement
       const nouveauNiveau = calculerNiveau(user.points + pointsConnexion);
       if (nouveauNiveau !== user.niveau) {
         db.query('UPDATE users SET niveau = ? WHERE id = ?', [nouveauNiveau, user.id]);
@@ -151,7 +118,6 @@ const login = (req, res) => {
   );
 };
 
-// Calcul automatique du niveau selon les points
 const calculerNiveau = (points) => {
   if (points >= 7)  return 'expert';
   if (points >= 5)  return 'avance';
