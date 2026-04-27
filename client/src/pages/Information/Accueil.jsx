@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getActualites } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const Accueil = () => {
+  const { user } = useAuth();
   const [actualites, setActualites] = useState([]);
   const [recherche,  setRecherche]  = useState('');
   const [categorie,  setCategorie]  = useState('');
@@ -37,8 +39,9 @@ const Accueil = () => {
           La plateforme intelligente de votre station de ski
         </p>
         <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link to="/register" className="btn btn-success">S'inscrire</Link>
-          <Link to="/login"    className="btn btn-outline" style={{ borderColor: '#fff', color: '#fff' }}>Se connecter</Link>
+          {!user && <Link to="/register" className="btn btn-success">S'inscrire</Link>}
+          {!user && <Link to="/login" className="btn btn-outline" style={{ borderColor: '#fff', color: '#fff' }}>Se connecter</Link>}
+          {user && <Link to="/dashboard" className="btn btn-success">Mon tableau de bord 🏠</Link>}
         </div>
       </div>
 

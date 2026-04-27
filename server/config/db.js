@@ -4,7 +4,7 @@ const db = mysql.createConnection({
   host:     'localhost',
   port:     3306,
   user:     'root',
-  password: 'root1234',            // si vous avez mis un mot de passe lors de l'install MySQL, mettez-le ici. Sinon laissez vide
+  password: 'root1234',            
   database: 'skiconnect'
 });
 

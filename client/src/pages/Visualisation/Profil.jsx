@@ -12,9 +12,14 @@ const Profil = () => {
   const [error,   setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Charger le profil complet depuis l'API au lieu du token
   useEffect(() => {
-    if (user) setForm({ ...user, password: '' });
-  }, [user]);
+    getMyProfile().then(res => {
+      setForm({ ...res.data, password: '' });
+    }).catch(() => {
+      if (user) setForm({ ...user, password: '' });
+    });
+  }, []);
 
   if (!form) return <div className="spinner">Chargement...</div>;
 
@@ -25,6 +30,8 @@ const Profil = () => {
     setMsg(''); setError('');
     try {
       await updateProfile(form);
+      const profil = await getMyProfile();
+      setForm({ ...profil.data, password: '' });
       setMsg('Profil mis à jour !');
     } catch { setError('Erreur lors de la mise à jour.'); }
   };
@@ -35,16 +42,16 @@ const Profil = () => {
     try {
       const res = await changerNiveau({ nouveau_niveau: niveau });
       setMsg(res.data.message);
-      // Recharger le profil
       const profil = await getMyProfile();
       loginUser(localStorage.getItem('token'), profil.data);
+      setForm({ ...profil.data, password: '' });
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur.');
     } finally { setLoading(false); }
   };
 
   const prochains = ['intermediaire', 'avance', 'expert'].filter(
-    n => niveauxOrdre[n] > niveauxOrdre[user.niveau]
+    n => niveauxOrdre[n] > niveauxOrdre[form.niveau]
   );
 
   return (
@@ -60,7 +67,7 @@ const Profil = () => {
           <form onSubmit={handleSave}>
             <div className="form-group">
               <label>Pseudo</label>
-              <input name="pseudo" value={form.pseudo} onChange={handleChange} />
+              <input name="pseudo" value={form.pseudo || ''} onChange={handleChange} />
             </div>
             <div className="form-row">
               <div className="form-group">
@@ -111,13 +118,13 @@ const Profil = () => {
             <h2 style={{ marginBottom: '1rem' }}>🏆 Niveau & Points</h2>
             <div style={{ textAlign: 'center', padding: '1rem' }}>
               <div style={{ fontSize: '3rem' }}>
-                {{ debutant: '🔵', intermediaire: '🟢', avance: '🟠', expert: '🔴' }[user.niveau]}
+                {{ debutant: '🔵', intermediaire: '🟢', avance: '🟠', expert: '🔴' }[form.niveau]}
               </div>
               <div style={{ fontWeight: 700, fontSize: '1.3rem', marginTop: '0.5rem', textTransform: 'capitalize' }}>
-                {user.niveau}
+                {form.niveau}
               </div>
               <div style={{ color: '#90a4ae', marginTop: '0.3rem' }}>
-                {user.points?.toFixed(2)} points · {user.nb_connexions} connexions · {user.nb_actions} actions
+                {form.points?.toFixed(2)} points · {form.nb_connexions} connexions · {form.nb_actions} actions
               </div>
             </div>
 
@@ -130,15 +137,15 @@ const Profil = () => {
                     <button
                       className="btn btn-primary btn-sm"
                       onClick={() => handleNiveau(n)}
-                      disabled={loading || user.points < niveauxRequis[n]}
+                      disabled={loading || form.points < niveauxRequis[n]}
                     >
-                      {user.points >= niveauxRequis[n] ? 'Débloquer' : `Manque ${(niveauxRequis[n] - user.points).toFixed(2)} pts`}
+                      {form.points >= niveauxRequis[n] ? 'Débloquer' : `Manque ${(niveauxRequis[n] - form.points).toFixed(2)} pts`}
                     </button>
                   </div>
                 ))}
               </>
             )}
-            {user.niveau === 'expert' && (
+            {form.niveau === 'expert' && (
               <div className="alert alert-success">🏆 Vous avez atteint le niveau maximum !</div>
             )}
           </div>
