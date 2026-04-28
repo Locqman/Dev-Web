@@ -1,0 +1,16 @@
+# Dépendances
+node_modules/
+.npm
+.eslintcache
+
+# Environnement (clés secrètes)
+.env
+.env.local
+
+# Dossiers de build
+dist/
+build/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
